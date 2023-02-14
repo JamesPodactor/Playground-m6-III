@@ -30,50 +30,47 @@ var myTeam = [
     },
 ];
 
-// 1. Generación aleatoria de la disponibilidad
-// Como primer apartado, vamos a generar aleatoriamente la disponibilidad para todos los miembros del equipo. 
-// Se trata de recorrer todos los miembros del equipo, y a su vez, para cada miembro, todas las franjas horarias 
-// de su disponibilidad, e ir asignando aleatoriamente si está disponible o no en dicha franja.
-// De esta forma generamos un equipo con una agenda completamente aleatoria.
-// var myArray = new Array(3).fill("Hola");
-// console.log(myArray); // ["Hola","Hola","Hola"];
-
-
 var generateRandom = () => {
-  for (var members of myTeam) {
-    for (var i = 0; i < members.availability.length; i++) {
+  for (var member of myTeam) {
+    for (var i = 0; i < member.availability.length; i++) {
       if (Math.random() < 0.5) {
         availability = true;
       } else {
         availability = false;
       }
-      members.availability[i] = availability;
+      member.availability[i] = availability;
     }
   }
 }
 generateRandom();
 
 var teamCalendar = () => {
-  for (var members of myTeam) {
-    console.log("Disponibilidad de " + members.name);
+  var freeTimeSlots = [];
+  for (var member of myTeam) {
+    console.log("Disponibilidad de " + member.name);
     for (var i = 0; i < WORK_HOURS.length; i++) {
-      console.log(WORK_HOURS[i] + " " + members.availability[i] ? "si" : "no");
+      if (member.availability[i] == true) {
+        freeTimeSlots.push(i);
+      }
+      console.log(WORK_HOURS[i] + " " + (member.availability[i] ? "Si" : "No"));
     }
   }
-  
+  return freeTimeSlots;
 }
-teamCalendar();
 
-// var getTimeSlot = () => {
-//   var calendar = [];
-//   calendar = teamCalendar();
-//   for (var teamMates of calendar) {
-//     for (var i = 0; i < teamMates.length; i++) {
-//       if (indexOf.teamMates(true)) {
-//         return i
-//       }
-//       console.log(i)
-//     }
-//   }
-// }
-// getTimeSlot();
+var getTimeSlot = () => {
+  var freeTimeSlots = teamCalendar();
+  for (var i = 0; i < WORK_HOURS.length; i++) {
+    var repeatedIndex = 0;
+    for (var j = 0; j < freeTimeSlots.length; j++) {
+      if (freeTimeSlots[j] === i) {
+        repeatedIndex++;
+      }
+    }
+    if (repeatedIndex === 4) {
+      return "Hueco encontrado en el horario " + WORK_HOURS[i];
+    } 
+  }
+  return "Lo siento. No hay hueco disponible en el equipo.";
+}
+console.log(getTimeSlot());
